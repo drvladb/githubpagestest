@@ -36,7 +36,8 @@ jobs:
       - name: Prepare deploy
         working-directory: ./kofta
         run: |
-          git clone https://github.com/cloudflare/worker-sites-template .
+          git clone https://github.com/cloudflare/worker-sites-template
+          mv worker-sites-template/workers-site .
           PRNUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
           cat << EOF > wrangler.toml
           name = "dogehouse-pr-$PRNUMBER"
