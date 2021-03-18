@@ -1,0 +1,54 @@
+name: Preview Build
+on:
+  pull_request:
+    branches:
+      - staging
+    paths:
+      - "kofta/**"
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+jobs:
+  build:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - name: Enter Kofta
+        run: cd kofta
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Prepare deploy
+        run: |
+          git clone https://github.com/cloudflare/worker-sites-template .
+          PRNUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+          cat << EOF > wrangler.toml
+          name = "dogehouse-pr-$PRNUMBER"
+          type = "webpack"
+          account_id = ""
+          workers_dev = true
+          route = ""
+          zone_id = ""
+
+          [site]
+          bucket = "./build"
+          EOF
+
+      - name: Deploy
+        uses: cloudflare/wrangler-action@1.3.0
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
