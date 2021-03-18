@@ -65,14 +65,10 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           workingDirectory: "kofta"
 
-      - name: Debug log some data
-        run: |
-          echo ${{ github.event.action }}
-
       - name: Comment on PR
         uses: unsplash/comment-on-pr@master
         if: github.event.action == 'opened'
         env:
           GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
         with:
-          msg: "Preview version deployed at https://dogehouse-pr-${{ env.PRNUMBER }}.${{ env.BASEURL }}.workers.dev"
+          msg: "Preview version deployed at https://dogehouse-pr-${{ env.PRNUMBER }}.${{ env.BASEURL }}.workers.dev! The preview version will be updated as new commits are added"
