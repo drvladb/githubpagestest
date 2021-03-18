@@ -21,4 +21,4 @@ jobs:
       - name: Delete worker
         run: |
           PRNUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
-          echo $PRNUMBER
+          curl -H "Authorization: ${{ secrets.CF_API_TOKEN }}" -X DELETE "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/workers/scripts/dogehouse-pr-$PRNUMBER"
