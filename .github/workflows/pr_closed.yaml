@@ -15,10 +15,10 @@ jobs:
     name: Clean up
     runs-on: ubuntu-latest
     steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
       - name: Delete worker
         run: |
           PRNUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
-          curl -X DELETE "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/workers/scripts/dogehouse-pr-$PRNUMBER" \
-            -H "Authorization: ${{ secrets.CF_API_TOKEN }}"
-          echo "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/workers/scripts/dogehouse-pr-$PRNUMBER"
-          echo "Authorization: ${{ secrets.CF_API_TOKEN }}"
+          echo $PRNUMBER
