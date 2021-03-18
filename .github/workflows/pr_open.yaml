@@ -35,17 +35,20 @@ jobs:
 
       - name: Prepare deploy
         working-directory: ./kofta
+        env:
+          PRNUMBER: $(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_ZONE_ID: ${{ secrets.CF_ZONE_ID }}
         run: |
           git clone https://github.com/cloudflare/worker-sites-template
           mv worker-sites-template/workers-site .
-          PRNUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
           cat << EOF > wrangler.toml
           name = "dogehouse-pr-$PRNUMBER"
           type = "webpack"
-          account_id = ""
+          account_id = "$CF_ACCOUNT_ID"
           workers_dev = true
           route = ""
-          zone_id = ""
+          zone_id = "$CF_ZONE_ID"
 
           [site]
           bucket = "./build"
