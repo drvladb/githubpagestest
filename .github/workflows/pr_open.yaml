@@ -3,6 +3,8 @@ on:
   pull_request:
     branches:
       - staging
+      - main
+      - dev
     paths:
       - "kofta/**"
     types:
