@@ -20,6 +20,11 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v2
 
+      - name: Calculate ENV Variables
+        run: |
+          PRNUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+          BASEURL="vladb"
+
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
@@ -39,7 +44,6 @@ jobs:
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           CF_ZONE_ID: ${{ secrets.CF_ZONE_ID }}
         run: |
-          PRNUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
           git clone https://github.com/cloudflare/worker-sites-template
           mv worker-sites-template/workers-site .
           cat << EOF > wrangler.toml
@@ -60,3 +64,15 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           workingDirectory: "kofta"
+
+      - name: Debug log some data
+        run: |
+          echo ${{ github.event }}
+
+      # - name: Comment on PR
+      #   uses: unsplash/comment-on-pr@master
+      #   if: github.event
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+      #   with:
+      #     msg: "Preview version deployed at dogehouse-pr-$PRNUMBER.$BASEURL.workers.dev"
