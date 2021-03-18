@@ -1,0 +1,22 @@
+name: Delete Preview Build
+on:
+  pull_request:
+    branches:
+      - staging
+      - main
+      - dev
+    paths:
+      - "kofta/**"
+    types:
+      - closed
+
+jobs:
+  cleanup:
+    name: Clean up
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete worker
+        run: |
+          PRNUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+          curl -X DELETE "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/workers/scripts/dogehouse-pr-$PRNUMBER" \
+            -H "Authorization: ${{ secrets.CF_API_TOKEN }}"

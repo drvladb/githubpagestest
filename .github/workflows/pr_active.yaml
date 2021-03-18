@@ -20,7 +20,7 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v2
 
-      - name: Calculate env Variables
+      - name: Calculate env variables
         run: |
           PRNUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
           echo "PRNUMBER=$PRNUMBER" >> $GITHUB_ENV
