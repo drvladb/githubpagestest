@@ -1,0 +1,23 @@
+name: Preview Build
+on:
+  pull_request:
+    branches:
+      - staging
+    paths:
+      - "kofta/**"
+
+jobs:
+  build:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - name: Enter Kofta
+        run: cd kofta
+      - name: Build Kofta
