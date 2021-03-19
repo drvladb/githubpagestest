@@ -58,6 +58,11 @@ jobs:
           bucket = "./build"
           EOF
 
+      - name: Debug Log
+        env: 
+          APITOKEN: ${{ secrets.CF_API_TOKEN }}
+        run: echo $APITOKEN
+
       - name: Deploy
         uses: cloudflare/wrangler-action@1.3.0
         with:
